@@ -1,0 +1,105 @@
+<!-- templates/words.html -->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>words</title>
+</head>
+<body>
+    <h1>{{ user_info.name }}</h1>
+    <h2>{{ user_info.id }}</h2>
+
+    {% if user_info.photo_url %}
+        <img src="{{ user_info.photo_url }}" alt="用户照片" style="width: 200px; height: 200px;">
+    {% endif %}
+
+    <h3>API input：</h3>
+    <h2>10</h2>
+    <label for="city10">city：</label>
+    <input type="text" id="city10" name="city10">
+
+    <label for="limit10">limit：</label>
+    <input type="number" id="limit10" name="limit10" value="10">
+
+    <button onclick="getPopularWords_10()">getPopularWords</button>
+
+    <h2>11</h2>
+    <label for="city11">city：</label>
+    <input type="text" id="city11" name="city11">
+
+    <label for="limit11">limit：</label>
+    <input type="number" id="limit11" name="limit11" value="10">
+
+    <button onclick="getPopularWords_11()">getPopularWords</button>
+
+    <h2>12</h2>
+    <!-- 替换单词的表单 -->
+    <form id="substitutionForm" action="/substitute_words" method="post">
+        <label for="word">Word to Replace:</label>
+        <input type="text" id="word" name="word" required>
+
+        <label for="substitute">Substitute:</label>
+        <input type="text" id="substitute" name="substitute" required>
+
+    </form>
+    <button onclick="substituteWords()">replace</button>
+
+
+    <div id="result"></div>
+
+    <script>
+        function substituteWords() {
+            var wordToReplace = document.getElementById('word').value;
+            var substituteWord = document.getElementById('substitute').value;
+
+            var requestData = {
+                "word": wordToReplace,
+                "substitute": substituteWord
+            };
+
+            fetch("/substitute_words", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(requestData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Success:", data);
+                // Handle the response data as needed
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                // Handle errors if any
+            });
+        }
+
+        function getPopularWords_10() {
+            var city = document.getElementById('city10').value;
+            var limit = document.getElementById('limit10').value;
+
+            fetch(`/popular_words_10?city=${city}&limit=${limit}`)
+                .then(response => response.json())
+                .then(data => displayResult(data))
+                .catch(error => console.error('错误:', error));
+        }
+
+        function getPopularWords_11() {
+            var city = document.getElementById('city11').value;
+            var limit = document.getElementById('limit11').value;
+
+            fetch(`/popular_words_11?city=${city}&limit=${limit}`)
+                .then(response => response.json())
+                .then(data => displayResult(data))
+                .catch(error => console.error('错误:', error));
+        }
+
+        function displayResult(data) {
+            var resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '<h3>API response：</h3><pre>' + JSON.stringify(data, null, 2) + '</pre>';
+        }
+    </script>
+</body>
+</html>
