@@ -16,6 +16,12 @@ user_info = {
     'id': '6001'
 }
 
+user_info_2 = {
+    'name': 'Xiao Yang',
+    'id': '5991'
+}
+
+
 
 # @app.route('/')
 # def index():
@@ -190,7 +196,7 @@ def substitute_words():
 
 @app.route('/words', methods=['GET'])
 def words_page():
-    return render_template('words.html', user_info=user_info)
+    return render_template('words.html', user_info=user_info, user_info_2=user_info_2)
 
 
 if __name__ == '__main__':
